@@ -1,0 +1,75 @@
+# Build artifacts
+*.o
+*.obj
+*.ko
+*.mod
+*.elf
+*.bin
+*.out
+*.exe
+*.dll
+*.lib
+*.so
+*.a
+*.ilk
+*.pdb
+*.exp
+*.idb
+*.ipch
+*.pch
+*.gch
+*.d
+*.tds
+*.sym
+
+# Compiled source
+*.class
+
+# Log files
+*.log
+
+# Temporary files
+*~
+*.tmp
+*.bak
+*.swp
+*.swo
+
+# IDE-specific files and directories
+.vs/
+.vscode/
+*.suo
+*.user
+*.ncb
+*.aps
+*.bsc
+*.sbr
+*.vcproj.*.user
+*.vcxproj.*.user
+*.filters
+*.sln.docstates
+*.opendb
+*.tlog
+*.lastbuildstate
+*.cache
+*.sdf
+*.ipdb
+*.res
+*.rcproj.*.user
+*.rcproj.user
+
+# CMake build directories
+build/
+CMakeCache.txt
+CMakeFiles/
+cmake_install.cmake
+Makefile
+CTestTestfile.cmake
+_CPack_Packages/
+
+# Dependency management (e.g., vcpkg)
+vcpkg_installed/
+
+# Other common files to ignore
+.DS_Store
+Thumbs.db
