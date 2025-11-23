@@ -98,7 +98,7 @@ void GameLoop()
     {
         ClearConsoleAndDraw();
 
-        char playerSymbol = (currentPlayer == GridTile::Player::ONE) ? 'O' : 'X';
+        char playerSymbol = (currentPlayer == GridTile::Player::ONE) ? '1' : '2';
         cout << "\nTurno del jugador " << playerSymbol << endl;
         cout << "Ingresa la columna (1-" << MAX_COLUMNS<< "): ";
 
