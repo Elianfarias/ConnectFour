@@ -118,7 +118,7 @@ void GameLoop()
 
         grid[row][col].isRevealed = true;
         grid[row][col].player = currentPlayer;
-        grid[row][col].color = currentPlayer == GridTile::Player::ONE ? COLOR_RED : COLOR_BLUE;
+        grid[row][col].color = currentPlayer == GridTile::Player::ONE ? COLOR_RED_BG : COLOR_BLUE_BG;
         movesPlayed++;
 
         if (CheckWinPlayer(currentPlayer))
