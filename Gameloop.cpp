@@ -13,9 +13,9 @@ void ClearConsoleAndDraw()
     DrawGrid();
 }
 
-bool IsValidPosition(int row, int col)
+bool CheckWinPlayer(GridTile::Player player)
 {
-    return row >= 0 && row < MAX_ROWS && col >= 0 && col < MAX_COLUMNS;
+    return false;
 }
 
 void GameLoop()
@@ -28,104 +28,75 @@ void GameLoop()
 
     while (pairsFound < PAIRS)
     {
-        int row1, row2, col1, col2;
+        int col1, col2;
 
         ClearConsoleAndDraw();
         cout << "Movimientos: " << moves << "    Parejas encontradas: " << pairsFound << " / " << PAIRS << "\n\n";
 
-        // Primera selección
-        cout << "Selecciona la FILA: ";
-        cin >> row1;
-        cout << "Selecciona la COLUMNA: ";
+        cout << "Jugador 1 - Selecciona la COLUMNA: ";
         cin >> col1;
-        row1--;
         col1--;
+        int row = GetRowPosition(col1);
 
-        if (!IsValidPosition(row1, col1))
+        if (!IsValidPosition(row, col1))
         {
             cout << "Selecciona una columna/fila valida. Presiona una tecla para continuar...";
+            grid[row][col1].isRevealed = false;
             _getch();
             continue;
         }
 
-        if (grid[row1][col1].isMatched)
+        if (CheckWinPlayer(GridTile::Player::ONE))
         {
-            cout << "Esa carta ya fue emparejada. Presiona una tecla para continuar...";
+            cout << "Felicidades Jugador 1, has ganado!";
             _getch();
             continue;
         }
 
-        if (grid[row1][col1].isRevealed)
+        if (grid[row][col1].isRevealed)
         {
-            cout << "Esa carta ya está revelada. Presiona una tecla para continuar...";
+            cout << "Este lugar ya está ocupado. Presiona una tecla para continuar...";
             _getch();
             continue;
         }
 
-        grid[row1][col1].isRevealed = true;
+        grid[row][col1].isRevealed = true;
+        grid[row][col1].player = GridTile::Player::ONE;
+
         ClearConsoleAndDraw();
 
-        // Segunda selección
-        cout << "Selecciona la FILA: ";
-        cin >> row2;
-        cout << "Selecciona la COLUMNA: ";
+        cout << "Jugador 2 - Selecciona la COLUMNA: ";
         cin >> col2;
-        row2--;
         col2--;
 
-        if (!IsValidPosition(row2, col2))
+        if (!IsValidPosition(row, col2))
         {
             cout << "Selecciona una columna/fila valida. Presiona una tecla para continuar...";
-            grid[row1][col1].isRevealed = false;
+            grid[row][col2].isRevealed = false;
             _getch();
             continue;
         }
 
-        if (row1 == row2 && col1 == col2)
+        if (CheckWinPlayer(GridTile::Player::TWO))
         {
-            cout << "No podés seleccionar la misma carta dos veces. Presiona una tecla para continuar...";
-            grid[row1][col1].isRevealed = false;
+            cout << "Felicidades Jugador 2, has ganado!";
             _getch();
             continue;
         }
 
-        if (grid[row2][col2].isMatched)
+        if (grid[row][col2].isRevealed)
         {
-            cout << "Esa carta ya fue emparejada. Presiona una tecla para continuar...";
-            grid[row1][col1].isRevealed = false;
+            cout << "Este lugar ya está ocupado. Presiona una tecla para continuar...";
+            grid[row][col2].isRevealed = false;
             _getch();
             continue;
         }
 
-        if (grid[row2][col2].isRevealed)
-        {
-            cout << "Esa carta ya está revelada. Presiona una tecla para continuar...";
-            grid[row1][col1].isRevealed = false;
-            _getch();
-            continue;
-        }
-
-        grid[row2][col2].isRevealed = true;
+        grid[row][col2].isRevealed = true;
+        grid[row][col2].player = GridTile::Player::TWO;
         ClearConsoleAndDraw();
 
         moves++;
-        if (grid[row1][col1].face == grid[row2][col2].face)
-        {
-            grid[row1][col1].isMatched = true;
-            grid[row2][col2].isMatched = true;
-            pairsFound++;
-            cout << "\n¡Encontraste una pareja!\n";
-            cout << "Presiona una tecla para continuar...";
-            _getch();
-        }
-        else
-        {
-            cout << "\nNo hay coincidencia.";
-            cout << " Se ocultaran en 1.5 segundos...";
-            Sleep(1500);
-            grid[row1][col1].isRevealed = false;
-            grid[row2][col2].isRevealed = false;
-        }
     }
 
     ClearConsoleAndDraw();

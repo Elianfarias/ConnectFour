@@ -1,9 +1,9 @@
 #pragma once
 struct GridTile
 {
-    char face;
+    enum Player { ONE, TWO, NONE };
     bool isRevealed;
-    bool isMatched;
+    Player player;
 
     GridTile();
     void DrawTile();

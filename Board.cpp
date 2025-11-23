@@ -41,9 +41,7 @@ void InitializeBoard()
     {
         for (int c = 0; c < MAX_COLUMNS; ++c)
         {
-            grid[r][c].face = symbols[idx++];
             grid[r][c].isRevealed = false;
-            grid[r][c].isMatched = false;
         }
     }
 }
@@ -100,4 +98,8 @@ void DrawGrid()
     }
     cout << BOTTOM_RIGHT << endl;
     SetConsoleTextAttribute(h, COLOR_WHITE);
+}
+
+int GetRowPosition(int col) {
+    return 0;
 }
