@@ -78,21 +78,19 @@ void DrawGrid()
         cout << VERTICAL;
         for (int col = 0; col < MAX_COLUMNS; col++)
         {
+            SetConsoleTextAttribute(h, grid[fil][col].color);
+            cout << "   ";
             SetConsoleTextAttribute(h, COLOR_GRAY_BG);
-            cout << " ";
-            grid[fil][col].DrawTile();
-            SetConsoleTextAttribute(h, COLOR_GRAY_BG);
-            cout << " ";
             cout << VERTICAL;
         }
         cout << endl;
-        SetConsoleTextAttribute(h, COLOR_GRAY_BG);
     }
 
     cout << BOTTOM_LEFT;
     for (int i = 0; i < MAX_COLUMNS; i++)
     {
         cout << HORIZONTAL << HORIZONTAL << HORIZONTAL;
+
         if (i != MAX_COLUMNS - 1)
             cout << T_UP;
     }
@@ -100,6 +98,13 @@ void DrawGrid()
     SetConsoleTextAttribute(h, COLOR_WHITE);
 }
 
-int GetRowPosition(int col) {
-    return 0;
+int GetRowPosition(int col)
+{
+    for (int r = MAX_ROWS - 1; r >= 0; r--)
+    {
+        if (!grid[r][col].isRevealed)
+            return r;
+    }
+
+    return -1;
 }

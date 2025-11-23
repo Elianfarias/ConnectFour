@@ -15,92 +15,129 @@ void ClearConsoleAndDraw()
 
 bool CheckWinPlayer(GridTile::Player player)
 {
+    // Verificar horizontal
+    for (int r = 0; r < MAX_ROWS; r++)
+    {
+        for (int c = 0; c <= MAX_COLUMNS - 4; c++)
+        {
+            if (grid[r][c].isRevealed && grid[r][c].player == player &&
+                grid[r][c + 1].isRevealed && grid[r][c + 1].player == player &&
+                grid[r][c + 2].isRevealed && grid[r][c + 2].player == player &&
+                grid[r][c + 3].isRevealed && grid[r][c + 3].player == player)
+            {
+                return true;
+            }
+        }
+    }
+
+    // Verificar vertical
+    for (int c = 0; c < MAX_COLUMNS; c++)
+    {
+        for (int r = 0; r <= MAX_ROWS - 4; r++)
+        {
+            if (grid[r][c].isRevealed && grid[r][c].player == player &&
+                grid[r + 1][c].isRevealed && grid[r + 1][c].player == player &&
+                grid[r + 2][c].isRevealed && grid[r + 2][c].player == player &&
+                grid[r + 3][c].isRevealed && grid[r + 3][c].player == player)
+            {
+                return true;
+            }
+        }
+    }
+
+    // Verificar diagonal descendente (\)
+    for (int r = 0; r <= MAX_ROWS - 4; r++)
+    {
+        for (int c = 0; c <= MAX_COLUMNS - 4; c++)
+        {
+            if (grid[r][c].isRevealed && grid[r][c].player == player &&
+                grid[r + 1][c + 1].isRevealed && grid[r + 1][c + 1].player == player &&
+                grid[r + 2][c + 2].isRevealed && grid[r + 2][c + 2].player == player &&
+                grid[r + 3][c + 3].isRevealed && grid[r + 3][c + 3].player == player)
+            {
+                return true;
+            }
+        }
+    }
+
+    // Verificar diagonal ascendente (/)
+    for (int r = 3; r < MAX_ROWS; r++)
+    {
+        for (int c = 0; c <= MAX_COLUMNS - 4; c++)
+        {
+            if (grid[r][c].isRevealed && grid[r][c].player == player &&
+                grid[r - 1][c + 1].isRevealed && grid[r - 1][c + 1].player == player &&
+                grid[r - 2][c + 2].isRevealed && grid[r - 2][c + 2].player == player &&
+                grid[r - 3][c + 3].isRevealed && grid[r - 3][c + 3].player == player)
+            {
+                return true;
+            }
+        }
+    }
+
     return false;
+}
+
+bool IsValidPosition(int col)
+{
+    if (col < 0 || col >= MAX_COLUMNS)
+        return false;
+
+    return !grid[0][col].isRevealed;
 }
 
 void GameLoop()
 {
-    srand((unsigned)time(nullptr));
     InitializeBoard();
+    GridTile::Player currentPlayer = GridTile::Player::ONE;
+    bool gameOver = false;
+    int movesPlayed = 0;
+    const int MAX_MOVES = MAX_ROWS * MAX_COLUMNS;
 
-    int pairsFound = 0;
-    int moves = 0;
-
-    while (pairsFound < PAIRS)
+    while (!gameOver)
     {
-        int col1, col2;
-
-        ClearConsoleAndDraw();
-        cout << "Movimientos: " << moves << "    Parejas encontradas: " << pairsFound << " / " << PAIRS << "\n\n";
-
-        cout << "Jugador 1 - Selecciona la COLUMNA: ";
-        cin >> col1;
-        col1--;
-        int row = GetRowPosition(col1);
-
-        if (!IsValidPosition(row, col1))
-        {
-            cout << "Selecciona una columna/fila valida. Presiona una tecla para continuar...";
-            grid[row][col1].isRevealed = false;
-            _getch();
-            continue;
-        }
-
-        if (CheckWinPlayer(GridTile::Player::ONE))
-        {
-            cout << "Felicidades Jugador 1, has ganado!";
-            _getch();
-            continue;
-        }
-
-        if (grid[row][col1].isRevealed)
-        {
-            cout << "Este lugar ya está ocupado. Presiona una tecla para continuar...";
-            _getch();
-            continue;
-        }
-
-        grid[row][col1].isRevealed = true;
-        grid[row][col1].player = GridTile::Player::ONE;
-
         ClearConsoleAndDraw();
 
-        cout << "Jugador 2 - Selecciona la COLUMNA: ";
-        cin >> col2;
-        col2--;
+        char playerSymbol = (currentPlayer == GridTile::Player::ONE) ? 'O' : 'X';
+        cout << "\nTurno del jugador " << playerSymbol << endl;
+        cout << "Ingresa la columna (1-" << MAX_COLUMNS<< "): ";
 
-        if (!IsValidPosition(row, col2))
+        int col;
+        cin >> col;
+        col--;
+
+        if (!IsValidPosition(col))
         {
-            cout << "Selecciona una columna/fila valida. Presiona una tecla para continuar...";
-            grid[row][col2].isRevealed = false;
-            _getch();
+            cout << "Columna invalida o llena. Presiona Enter para continuar...";
+            cin.ignore();
+            cin.get();
             continue;
         }
 
-        if (CheckWinPlayer(GridTile::Player::TWO))
+        int row = GetRowPosition(col);
+
+        grid[row][col].isRevealed = true;
+        grid[row][col].player = currentPlayer;
+        grid[row][col].color = currentPlayer == GridTile::Player::ONE ? COLOR_RED : COLOR_BLUE;
+        movesPlayed++;
+
+        if (CheckWinPlayer(currentPlayer))
         {
-            cout << "Felicidades Jugador 2, has ganado!";
-            _getch();
-            continue;
+            ClearConsoleAndDraw();
+            cout << "\nJugador " << playerSymbol << " ha ganado!" << endl;
+            gameOver = true;
         }
-
-        if (grid[row][col2].isRevealed)
+        else if (movesPlayed == MAX_MOVES)
         {
-            cout << "Este lugar ya está ocupado. Presiona una tecla para continuar...";
-            grid[row][col2].isRevealed = false;
-            _getch();
-            continue;
+            ClearConsoleAndDraw();
+            cout << "\nEmpate! El tablero esta lleno." << endl;
+            gameOver = true;
         }
-
-        grid[row][col2].isRevealed = true;
-        grid[row][col2].player = GridTile::Player::TWO;
-        ClearConsoleAndDraw();
-
-        moves++;
+        else
+        {
+            currentPlayer = (currentPlayer == GridTile::Player::ONE)
+                ? GridTile::Player::TWO
+                : GridTile::Player::ONE;
+        }
     }
-
-    ClearConsoleAndDraw();
-    cout << "\nFelicidades! encontraste todas las parejas en " << moves << " movimientos.\n";
-    cout << "Presiona una tecla para finalizar...";
-    _getch();
 }
