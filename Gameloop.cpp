@@ -125,12 +125,14 @@ void GameLoop()
         {
             ClearConsoleAndDraw();
             cout << "\nJugador " << playerSymbol << " ha ganado!" << endl;
+            cin.get();
             gameOver = true;
         }
         else if (movesPlayed == MAX_MOVES)
         {
             ClearConsoleAndDraw();
             cout << "\nEmpate! El tablero esta lleno." << endl;
+            cin.get();
             gameOver = true;
         }
         else
